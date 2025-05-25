@@ -1,0 +1,20 @@
+.header {
+  position: relative; 
+  font-family: 'Inter', sans-serif;
+  padding: 10px 20px;
+}
+
+.header-content {
+  text-align: center;
+}
+
+.header-content h1 {
+  margin: 0;
+}
+
+.profile-icon {
+  width: 35px;
+  position: absolute;
+  top: 13px;
+  right: 30px;
+}
