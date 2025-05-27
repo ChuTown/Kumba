@@ -1,31 +1,215 @@
-import Header from "./components/Header";
-import ProgressBar from "./components/ProgressBar";
-import SocialLinks from "./components/SocialLinks";
-import { useState } from "react";
+import React, { useEffect, useState } from 'react';
+import Button from './components/Button';
+import { preloadImages } from './components/ImageAssets';
+import './App.css';
 
-export default function App() {
-  const [donationAmount, setDonationAmount] = useState(0);
+function App() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    // Preload all button images
+    preloadImages();
+
+    // Header scroll effect with throttling
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 100);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Stats animation with Intersection Observer
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.5,
+      rootMargin: '50px'
+    };
+
+    const animateNumber = (element, start, end, originalText) => {
+      if (element.dataset.animated === 'true') return;
+      element.dataset.animated = 'true';
+
+      const duration = 2000;
+      const startTime = performance.now();
+
+      const updateNumber = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const current = Math.floor(start + (end - start) * progress);
+
+        if (originalText.includes('M')) {
+          element.textContent = '$' + (current / 1000000).toFixed(1) + 'M';
+        } else if (originalText.includes('K')) {
+          element.textContent = (current / 1000).toFixed(0) + 'K+';
+        } else if (originalText.includes('+')) {
+          element.textContent = current.toLocaleString() + '+';
+        } else {
+          element.textContent = current.toLocaleString();
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(updateNumber);
+        }
+      };
+
+      requestAnimationFrame(updateNumber);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const statNumbers = entry.target.querySelectorAll('.stat-number');
+          statNumbers.forEach(stat => {
+            const finalValue = stat.textContent;
+            const numericValue = parseInt(finalValue.replace(/[^0-9]/g, ''));
+            animateNumber(stat, 0, numericValue, finalValue);
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    const statsSection = document.querySelector('.stats');
+    if (statsSection) {
+      observer.observe(statsSection);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-900 to-black text-white">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-3xl mx-auto">
-          <h1 className="text-4xl font-bold text-center mb-8">
-            Kumba Coin
-          </h1>
-          <p className="text-xl text-center mb-12">
-            Making a difference through crypto - Every transaction contributes to charity
-          </p>
+    <>
+      <div className="floating-dodos">
+        <div className="floating-dodo">🦤</div>
+        <div className="floating-dodo">🦤</div>
+        <div className="floating-dodo">🦤</div>
+      </div>
 
-          <div className="bg-purple-800/30 rounded-lg p-6 mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Donation Progress</h2>
-            <ProgressBar amount={donationAmount} />
+      <header style={{ background: isScrolled ? 'rgba(74, 74, 74, 0.95)' : 'rgba(74, 74, 74, 0.8)' }}>
+        <nav className="container">
+          <div className="logo">
+            <div className="dodo-icon">🦕</div>
+            <span>KUMBA</span>
           </div>
+          <ul className="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#impact">Impact</a></li>
+            <li><a href="#partners">Partners</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+      </header>
 
-          <SocialLinks />
-        </div>
+      <main>
+        <section className="hero" id="home">
+          <div className="container">
+            <div className="hero-content">
+              <h1>KUMBA Charity</h1>
+              <p>Carving a better future in stone. Join the prehistoric revolution of giving.</p>
+              <Button
+                type="mint"
+                variant="big"
+                onClick={() => window.location.href = '#about'}
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="stats" id="impact">
+          <div className="container">
+            <div className="stats-grid">
+              <div className="stat-card">
+                <div className="stat-number">$2.4M</div>
+                <div className="stat-label">Total Donated</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">15,847</div>
+                <div className="stat-label">Lives Changed</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">250K+</div>
+                <div className="stat-label">Stone Age NFTs</div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-number">50+</div>
+                <div className="stat-label">Cave Partners</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="features" id="about">
+          <div className="container">
+            <h2>How KUMBA Works</h2>
+            <div className="features-grid">
+              <div className="feature-card">
+                <div className="feature-icon">🦕</div>
+                <h3>Prehistoric Giving</h3>
+                <p>Every KUMBA transaction carves out a piece for charity. Simple as drawing on cave walls - no extra steps needed.</p>
+              </div>
+              <div className="feature-card">
+                <div className="feature-icon">🦖</div>
+                <h3>Dino-mite Impact</h3>
+                <p>Watch your impact grow like a T-Rex! Track every donation and see the real-world changes you're making.</p>
+              </div>
+              <div className="feature-card">
+                <div className="feature-icon">🗿</div>
+                <h3>Stone-Solid Security</h3>
+                <p>Your transactions are carved in stone. Our prehistoric-grade security ensures every donation reaches its destination.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="partners" id="partners">
+          <div className="container">
+            <h2>Our Cave Partners</h2>
+            <div className="partners-grid">
+              <div className="partner-card">
+                <h4>Clean Water Caverns</h4>
+                <p>Bringing crystal-clear water to communities, one cave spring at a time.</p>
+              </div>
+              <div className="partner-card">
+                <h4>Prehistoric Education</h4>
+                <p>Teaching the next generation to draw their own future on the walls of possibility.</p>
+              </div>
+              <div className="partner-card">
+                <h4>Dino Health Initiative</h4>
+                <p>Making healthcare as strong as a Stegosaurus's plates.</p>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
-    </div>
+
+      <footer id="contact">
+        <div className="container">
+          <div className="footer-content">
+            <div className="footer-section">
+              <h4>About KUMBA</h4>
+              <p>KUMBA is more than crypto - it's a prehistoric force for good, turning digital assets into real-world impact.</p>
+            </div>
+            <div className="footer-section">
+              <h4>Connect</h4>
+              <div className="social-buttons">
+                <Button type="twitter" onClick={() => window.open('https://twitter.com')} />
+                <Button type="wallet" onClick={() => window.open('https://wallet.connect')} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </>
   );
 }
+
+export default App;
