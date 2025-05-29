@@ -11,7 +11,7 @@ CORS(app)  # allow requests from your React app
 
 rpc_url = os.getenv(
     "QUICKNODE_ENDPOINT",
-    os.getenv("RPC_URL")
+    os.getenv("RPC_URL_DEV") #"RPC_URL_DEV"
 )
 
 WALLET_ADDRESS = os.getenv("WALLET_ADDRESS")
@@ -45,6 +45,8 @@ def wallet_balance():
         return jsonify(error="RPC request failed", details=str(e)), 502
     except KeyError:
         return jsonify(error="Unexpected RPC response"), 500
+
+
 
 @app.route('/api/latest_tweets', methods=['GET'])
 def latest_tweets():
