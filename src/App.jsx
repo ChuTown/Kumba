@@ -6,6 +6,8 @@ import './App.css';
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [backendMessage, setBackendMessage] = useState(''); // ← new
+  const [solAmount, setSolAmount] = useState(0);
+  
 
   useEffect(() => {
     // Preload all button images
@@ -40,6 +42,25 @@ function App() {
 
     pingBackend();
   }, []);
+
+  useEffect(() => {
+    const retrieveSolAmount = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/wallet_balance');
+        const data = await res.json();
+        const sol = data["sol"]
+        setSolAmount(sol);
+        console.log(data);
+        console.log(sol);
+      }
+      catch (err) {
+        console.error(err);
+      }
+    };
+    retrieveSolAmount();
+  },[]);
+
+  
 
   // Stats animation with Intersection Observer
   useEffect(() => {
@@ -132,6 +153,7 @@ function App() {
               <p>Carving a better future in stone. Join the prehistoric revolution of giving.</p>
               
               {backendMessage && <p className="backend-echo">{backendMessage}</p>}
+              {solAmount && <p className="backend-echo">{solAmount} sol </p>}
               
               <Button
                 type="mint"
