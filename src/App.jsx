@@ -5,6 +5,7 @@ import './App.css';
 
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [backendMessage, setBackendMessage] = useState(''); // ← new
 
   useEffect(() => {
     // Preload all button images
@@ -24,6 +25,20 @@ function App() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const pingBackend = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/hello');
+        const txt = await res.text();
+        setBackendMessage(txt);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    pingBackend();
   }, []);
 
   // Stats animation with Intersection Observer
@@ -115,6 +130,9 @@ function App() {
             <div className="hero-content">
               <h1>KUMBA Charity</h1>
               <p>Carving a better future in stone. Join the prehistoric revolution of giving.</p>
+              
+              {backendMessage && <p className="backend-echo">{backendMessage}</p>}
+              
               <Button
                 type="mint"
                 variant="big"
