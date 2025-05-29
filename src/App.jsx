@@ -1,14 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useEffect, useState, useRef } from 'react';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import Button from './components/Button';
 import { preloadImages } from './components/ImageAssets';
 import './App.css';
 import { Line } from 'rc-progress';
+import { Tweet } from 'react-tweet'
 
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [backendMessage, setBackendMessage] = useState(''); // ← new
+  const [backendMessage, setBackendMessage] = useState('');
   const [solAmount, setSolAmount] = useState(0);
+  const [tweetIds, setTweetIds] = useState(["1927873790513442919", "1927426728588132647", "1927069267859509623", "1926056883246264542", "1925758056559792195"]);
+
+  // 1️⃣ Carousel ref + scroll helper
+  const carouselRef = useRef(null);
+  const scroll = (dir) => {
+    if (!carouselRef.current) return;
+    const { clientWidth } = carouselRef.current;
+    const distance = clientWidth * 0.8 * (dir === 'left' ? -1 : 1);
+    carouselRef.current.scrollBy({ left: distance, behavior: 'smooth' });
+  };
   
+  /* Will Uncomment later
+  useEffect(() => {
+    async function getTweets() {
+      try {
+        const res = await fetch('http://localhost:5000/api/latest_tweets');
+        const { tweets } = await res.json();
+        setTweetIds(tweets);
+      } catch (err) {
+        console.error("Failed to load tweets", err);
+      }
+    }
+    getTweets();
+  }, []);*/
 
   useEffect(() => {
     // Preload all button images
@@ -170,8 +196,49 @@ function App() {
                 variant="big"
                 onClick={() => window.location.href = '#about'}
               />
+
+              
+
             </div>
           </div>
+        </section>
+
+        <section className="tweets-section" id="tweets">
+          <Container fluid>
+
+            <h2 className="text-center mb-4">Latest from @KumbaOnsol</h2>
+
+          <div className="carousel-container">
+            <button
+              className="arrow-btn left"
+              onClick={() => scroll('left')}
+              aria-label="Scroll left"
+            >
+              &#9664;
+            </button>
+
+            <div className="tweet-carousel" ref={carouselRef}>
+              <Row className="flex-nowrap g-3">
+                {tweetIds.map(id => (
+                  <Col key={id} xs="auto">
+                    <div className="tweet-wrapper">
+                      <Tweet id={id} options={{ width: 550 }} />
+                    </div>
+                  </Col>
+                ))}
+              </Row>
+            </div>
+
+            <button
+              className="arrow-btn right"
+              onClick={() => scroll('right')}
+              aria-label="Scroll right"
+            >
+              &#9654;
+            </button>
+          </div>
+
+          </Container>
         </section>
 
         <section className="stats" id="impact">

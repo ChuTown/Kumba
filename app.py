@@ -16,6 +16,9 @@ rpc_url = os.getenv(
 
 WALLET_ADDRESS = os.getenv("WALLET_ADDRESS")
 
+TWITTER_BEARER = os.getenv("TWITTER_BEARER_TOKEN")
+TWITTER_USER = os.getenv("TWITTER_USERNAME")
+
 #below are API endpoints
 @app.route('/api/hello')
 def hello():
@@ -42,6 +45,36 @@ def wallet_balance():
         return jsonify(error="RPC request failed", details=str(e)), 502
     except KeyError:
         return jsonify(error="Unexpected RPC response"), 500
+
+@app.route('/api/latest_tweets', methods=['GET'])
+def latest_tweets():
+    #get twitter user ID
+    """    
+    user_resp = requests.get(
+        f"https://api.twitter.com/2/users/by/username/{TWITTER_USER}",
+        headers={"Authorization": f"Bearer {TWITTER_BEARER}"}
+    )
+    if not user_resp.ok:
+        return jsonify(error="Could not fetch user"), user_resp.status_code"""
+
+    user_id = "1856393766606692352"
+
+    #get 3 of the latest tweets
+    tweets_resp = requests.get(
+        f"https://api.twitter.com/2/users/{user_id}/tweets", #once per 15 min
+        headers={"Authorization": f"Bearer {TWITTER_BEARER}"},
+        params={"max_results": 5, "tweet.fields": "id"}
+    )
+    if not tweets_resp.ok:
+        return jsonify(error="Could not fetch tweets"), tweets_resp.status_code
+
+    tweet_data = tweets_resp.json().get("data", [])
+
+    print(tweet_data)
+
+    #return only tweet IDs
+    tweet_ids = [t["id"] for t in tweet_data]
+    return jsonify(tweets=tweet_ids), 200
 
 if __name__ == '__main__':
     # Runs on http://localhost:5000
