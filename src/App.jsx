@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Button from './components/Button';
 import { preloadImages } from './components/ImageAssets';
 import './App.css';
+import { Line } from 'rc-progress';
 
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -153,7 +154,16 @@ function App() {
               <p>Carving a better future in stone. Join the prehistoric revolution of giving.</p>
               
               {backendMessage && <p className="backend-echo">{backendMessage}</p>}
-              {solAmount && <p className="backend-echo">{solAmount} sol </p>}
+              
+              {/* progress bar: max = 10 */}
+              <Line
+                percent={Math.min((solAmount / 10) * 100, 100)}
+                strokeWidth={4}
+                strokeColor="#d15400"
+              />
+              <p>
+                {solAmount} SOL / 10 SOL
+              </p>
               
               <Button
                 type="mint"

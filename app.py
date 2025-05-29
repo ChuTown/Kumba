@@ -3,16 +3,18 @@ import os
 import requests
 from flask import Flask, jsonify
 from flask_cors import CORS
+from dotenv import load_dotenv
 
+load_dotenv()
 app = Flask(__name__)
 CORS(app)  # allow requests from your React app
 
-RPC_URL = os.getenv(
+rpc_url = os.getenv(
     "QUICKNODE_ENDPOINT",
-    "https://blissful-compatible-mound.solana-mainnet.quiknode.pro/6ae20ef0b830bd6c8e439340e2537ae264e6ddb0/"
+    os.getenv("RPC_URL")
 )
 
-WALLET_ADDRESS = "CbuwfqfVsb3srTGfWseVDqepBHDmDcGXxxCmKZZcsmco"
+WALLET_ADDRESS = os.getenv("WALLET_ADDRESS")
 
 #below are API endpoints
 @app.route('/api/hello')
@@ -28,7 +30,7 @@ def wallet_balance():
         "params": [WALLET_ADDRESS]
     }
     try:
-        resp = requests.post(RPC_URL, json=payload)
+        resp = requests.post(rpc_url, json=payload)
         resp.raise_for_status()
         lamports = resp.json()["result"]["value"]
         return jsonify({
