@@ -6,6 +6,8 @@ import { preloadImages } from './components/ImageAssets';
 import './App.css';
 import { Line } from 'rc-progress';
 import { Tweet } from 'react-tweet'
+import Poll from './components/Poll';
+
 
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -191,11 +193,7 @@ function App() {
                 {solAmount} SOL / 10 SOL
               </p>
               
-              <Button
-                type="mint"
-                variant="big"
-                onClick={() => window.location.href = '#about'}
-              />
+            <Poll />
 
               
 
