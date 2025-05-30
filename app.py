@@ -1,4 +1,4 @@
-
+import json
 import os
 import requests
 from flask import Flask, jsonify
@@ -15,7 +15,6 @@ from solana.system_program import TransferParams, transfer
 load_dotenv()
 app = Flask(__name__)
 CORS(app)  # allow requests from your React app
-
 
 
 # ENV variable
