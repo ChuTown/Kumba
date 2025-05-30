@@ -11,7 +11,7 @@ function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [backendMessage, setBackendMessage] = useState('');
   const [solAmount, setSolAmount] = useState(0);
-  const [tweetIds, setTweetIds] = useState(["1927873790513442919", "1927426728588132647", "1927069267859509623", "1926056883246264542", "1925758056559792195"]);
+  const [tweetIds, setTweetIds] = useState([]); //useState(["1927873790513442919", "1927426728588132647", "1927069267859509623", "1926056883246264542", "1925758056559792195"]);
 
   // 1️⃣ Carousel ref + scroll helper
   const carouselRef = useRef(null);
@@ -22,11 +22,11 @@ function App() {
     carouselRef.current.scrollBy({ left: distance, behavior: 'smooth' });
   };
   
-  /* Will Uncomment later
+  // Will Uncomment later
   useEffect(() => {
     async function getTweets() {
       try {
-        const res = await fetch('http://localhost:5000/api/latest_tweets');
+        const res = await fetch('http://localhost:5000/api/latest_tweets_alt');
         const { tweets } = await res.json();
         setTweetIds(tweets);
       } catch (err) {
@@ -34,7 +34,7 @@ function App() {
       }
     }
     getTweets();
-  }, []);*/
+  }, []);
 
   useEffect(() => {
     // Preload all button images

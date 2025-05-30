@@ -1,13 +1,18 @@
-
 import os
 import requests
+import json
+import time
+import random
 from flask import Flask, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
+from datetime import datetime
+
 
 load_dotenv()
 app = Flask(__name__)
 CORS(app)  # allow requests from your React app
+
 
 rpc_url = os.getenv(
     "QUICKNODE_ENDPOINT",
@@ -18,6 +23,52 @@ WALLET_ADDRESS = os.getenv("WALLET_ADDRESS")
 
 TWITTER_BEARER = os.getenv("TWITTER_BEARER_TOKEN")
 TWITTER_USER = os.getenv("TWITTER_USERNAME")
+
+ID_STORE      = 'tweet_ids.txt'
+NEXT_ALLOWED  = 'next_allowed.txt'
+
+#below is helper methods
+def extract_tweet_ids_from_response_data(data):
+    tweet_ids = []
+    instructions = (
+        data
+        .get("data", {})
+        .get("user", {})
+        .get("result", {})
+        .get("timeline", {})
+        .get("timeline", {})
+        .get("instructions", [])
+    )
+    for instr in instructions:
+        if instr.get("type") == "TimelineAddEntries":
+            for entry in instr.get("entries", []):
+                entry_id = entry.get("entryId", "")
+                if entry_id.startswith("tweet-"):
+                    tweet_ids.append(entry_id.split("-", 1)[1])
+    return tweet_ids
+
+def _read_saved_ids():
+    if not os.path.exists(ID_STORE):
+        return set()
+    with open(ID_STORE, 'r') as f:
+        return set(line.strip() for line in f if line.strip())
+
+def _append_new_ids(new_ids):
+    with open(ID_STORE, 'a') as f:
+        for tid in new_ids:
+            f.write(tid + "\n")
+
+def _read_next_allowed_ts():
+    if not os.path.exists(NEXT_ALLOWED):
+        return 0.0
+    try:
+        return float(open(NEXT_ALLOWED).read().strip())
+    except:
+        return 0.0
+
+def _write_next_allowed_ts(ts):
+    with open(NEXT_ALLOWED, 'w') as f:
+        f.write(str(ts))
 
 #below are API endpoints
 @app.route('/api/hello')
@@ -46,10 +97,9 @@ def wallet_balance():
     except KeyError:
         return jsonify(error="Unexpected RPC response"), 500
 
-
-
-@app.route('/api/latest_tweets', methods=['GET'])
-def latest_tweets():
+''' deprecated, maybe will use as backup later
+@app.route('/api/latest_tweets_twitterAPI', methods=['GET'])
+def latest_tweets_twitterAPI():
     #get twitter user ID
     """    
     user_resp = requests.get(
@@ -77,6 +127,56 @@ def latest_tweets():
     #return only tweet IDs
     tweet_ids = [t["id"] for t in tweet_data]
     return jsonify(tweets=tweet_ids), 200
+'''
+
+@app.route('/api/latest_tweets_alt', methods=['GET'])
+def latest_tweets_alt():
+    # Figure out if we're still on cooldown
+    now           = time.time()
+    next_allowed  = _read_next_allowed_ts()
+    if now < next_allowed:
+        # Cooldown still active → return the stored IDs
+        saved = sorted(_read_saved_ids(), reverse=True)
+        print(f"Returning cached IDs")
+        return jsonify(tweets=saved), 200
+
+    # Otherwise, hit Twitter
+    print(f"Fetching fresh tweets from Twitter")
+    raw_url = os.getenv("KUMBA_X_RAW_URL")
+    url     = raw_url or os.getenv("KUMBA_X_URL")
+    method  = os.getenv("KUMBA_X_METHOD", "get").lower()
+
+    try:
+        headers = json.loads(os.getenv("KUMBA_X_HEADERS", "{}"))
+        cookies = json.loads(os.getenv("KUMBA_X_COOKIES", "{}"))
+        queries = json.loads(os.getenv("KUMBA_X_QUERIES", "{}"))
+    except json.JSONDecodeError as e:
+        return jsonify(error="Malformed JSON in env", details=str(e)), 500
+
+    params = None if raw_url else queries
+    resp   = requests.request(method, url, headers=headers, cookies=cookies, params=params)
+    if not resp.ok:
+        return jsonify(error="x.com request failed", details=resp.text), resp.status_code
+
+    try:
+        data = resp.json()
+    except ValueError:
+        return jsonify(error="Invalid JSON from x.com"), 502
+
+    tweet_ids = extract_tweet_ids_from_response_data(data)
+
+    # Persist any brand-new IDs
+    saved_ids = _read_saved_ids()
+    new_ids   = [tid for tid in tweet_ids if tid not in saved_ids]
+    if new_ids:
+        _append_new_ids(new_ids)
+
+    # Schedule next allowed fetch: now + random 12–22 min (720–1,320 s)
+    cooldown = random.randint(12 * 60, 22 * 60)
+    _write_next_allowed_ts(now + cooldown)
+
+    return jsonify(tweets=tweet_ids), 200
+
 
 if __name__ == '__main__':
     # Runs on http://localhost:5000
