@@ -3,7 +3,8 @@ import requests
 import json
 import time
 import random
-from flask import Flask, jsonify
+import mysql.connector
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 from datetime import datetime
@@ -30,6 +31,13 @@ TWITTER_USER = os.getenv("TWITTER_USERNAME")
 
 ID_STORE      = 'tweet_ids.txt'
 NEXT_ALLOWED  = 'next_allowed.txt'
+
+db_config = {
+    'host': os.getenv("DB_HOST"),
+    'user': os.getenv("DB_USER"),
+    'password': os.getenv("DB_PASSWORD"),
+    'database': os.getenv("DB_NAME")
+}
 
 #below is helper methods
 def extract_tweet_ids_from_response_data(data):
@@ -196,6 +204,26 @@ def latest_tweets_alt():
 
     return jsonify(tweets=tweet_ids), 200
 
+
+@app.route('/api/submit_vote', methods=['POST'])
+def submit_vote():
+    data = request.json
+    option_id = data.get('option_id')
+
+    if not option_id:
+        return jsonify(error="Missing option_id"), 400
+
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO votes (option_id) VALUES (%s)", (option_id,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        print(f"Vote submitted for option: {option_id}")
+        return jsonify(success=True), 200
+    except mysql.connector.Error as err:
+        return jsonify(error=str(err)), 500
 
 if __name__ == '__main__':
     # Runs on http://localhost:5000

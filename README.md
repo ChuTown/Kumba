@@ -10,11 +10,14 @@ A prehistoric-themed charity website built with React and Vite, featuring animat
 - 📊 Animated statistics
 - 🖼️ Organized asset management
 - 📱 Responsive design
+- 🗳️ Poll voting system backed by MySQL
 
 ## Tech Stack
 
 - React
 - Vite
+- Flask (Python)
+- MySQL
 - CSS Modules
 - Modern JavaScript (ES6+)
 

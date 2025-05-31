@@ -19,15 +19,30 @@ function Poll() {
 
   const handleOptionChange = (e) => setSelectedOption(e.target.value);
 
-  const handleSubmitVote = () => {
+  const handleSubmitVote = async () => {
     if (selectedOption && !hasVoted) {
-      setPollData((prev) => ({
-        ...prev,
-        options: prev.options.map((option) =>
-          option.id === selectedOption ? { ...option, votes: option.votes + 1 } : option
-        ),
-      }));
-      setHasVoted(true);
+      try {
+        const res = await fetch('http://localhost:5000/api/submit_vote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ option_id: selectedOption })
+        });
+        const data = await res.json();
+        if (data.success) {
+          console.log('Vote successfully submitted');
+          setPollData((prev) => ({
+            ...prev,
+            options: prev.options.map((option) =>
+              option.id === selectedOption ? { ...option, votes: option.votes + 1 } : option
+            ),
+          }));
+          setHasVoted(true);
+        } else {
+          console.error('Failed to submit vote:', data.error);
+        }
+      } catch (err) {
+        console.error('Error submitting vote:', err);
+      }
     }
   };
 
