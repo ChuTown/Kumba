@@ -8,10 +8,14 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 from datetime import datetime
 
+from solathon.core.instructions import transfer
+from solathon import Client, Transaction, PublicKey, Keypair
+
 
 load_dotenv()
 app = Flask(__name__)
 CORS(app)  # allow requests from your React app
+client = Client("https://api.devnet.solana.com") #client for solathon
 
 
 rpc_url = os.getenv(
@@ -75,6 +79,7 @@ def _write_next_allowed_ts(ts):
 def hello():
     return 'hello backend', 200
 
+''' deprecated, old wallet balance endpoint (uses quickNode)
 @app.route('/api/wallet_balance', methods=['GET'])
 def wallet_balance():
     payload = {
@@ -96,6 +101,20 @@ def wallet_balance():
         return jsonify(error="RPC request failed", details=str(e)), 502
     except KeyError:
         return jsonify(error="Unexpected RPC response"), 500
+'''
+
+@app.route('/api/wallet_balance', methods=['GET'])
+def wallet_balance():
+    try:
+        balance = client.get_balance(WALLET_ADDRESS)
+        return jsonify({
+            "lamports": balance,
+            "sol": balance / 1e9
+        }), 200
+
+    except Exception as e:
+        return jsonify(error="Failed to fetch wallet balance", details=str(e)), 502
+
 
 ''' deprecated, maybe will use as backup later
 @app.route('/api/latest_tweets_twitterAPI', methods=['GET'])
