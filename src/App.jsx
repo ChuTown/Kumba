@@ -8,6 +8,8 @@ import { Line } from 'rc-progress';
 import { Tweet } from 'react-tweet'
 import Poll from './components/Poll';
 
+import { motion, useViewportScroll, useTransform } from 'framer-motion';
+import kumbaSwing from './assets/images/home/kumba_swing.png'; // Adjust path if needed
 
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -15,6 +17,9 @@ function App() {
   const [solAmount, setSolAmount] = useState(0);
   const [tweetIds, setTweetIds] = useState([]); //useState(["1927873790513442919", "1927426728588132647", "1927069267859509623", "1926056883246264542", "1925758056559792195"]);
   const [goalAmount, setGoalAmount] = useState(10);
+
+  const { scrollY } = useViewportScroll();
+  const x = useTransform(scrollY, [0, 500], ['-100%', '110%']); // animate left to right as you scroll down
 
   // 1️⃣ Carousel ref + scroll helper
   const carouselRef = useRef(null);
@@ -179,6 +184,21 @@ function App() {
       </header>
 
       <main>
+
+
+        <motion.img
+          src={kumbaSwing}
+          alt="Kumba Swing"
+          style={{
+            position: 'fixed',
+            top: '100px',
+            width: '150px',
+            height: 'auto',
+            zIndex: 10,
+            x
+          }}
+        />
+
         <section className="hero" id="home">
           <div className="container">
             <div className="hero-content">
