@@ -32,6 +32,8 @@ TWITTER_USER = os.getenv("TWITTER_USERNAME")
 ID_STORE      = 'tweet_ids.txt'
 NEXT_ALLOWED  = 'next_allowed.txt'
 
+GOAL_AMOUNT = 1000
+
 db_config = {
     'host': os.getenv("DB_HOST"),
     'user': os.getenv("DB_USER"),
@@ -117,7 +119,8 @@ def wallet_balance():
         balance = client.get_balance(WALLET_ADDRESS)
         return jsonify({
             "lamports": balance,
-            "sol": balance / 1e9
+            "sol": balance / 1e9,
+            "goalAmount": GOAL_AMOUNT
         }), 200
 
     except Exception as e:

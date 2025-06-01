@@ -14,6 +14,7 @@ function App() {
   const [backendMessage, setBackendMessage] = useState('');
   const [solAmount, setSolAmount] = useState(0);
   const [tweetIds, setTweetIds] = useState([]); //useState(["1927873790513442919", "1927426728588132647", "1927069267859509623", "1926056883246264542", "1925758056559792195"]);
+  const [goalAmount, setGoalAmount] = useState(10);
 
   // 1️⃣ Carousel ref + scroll helper
   const carouselRef = useRef(null);
@@ -78,7 +79,10 @@ function App() {
         const res = await fetch('http://localhost:5000/api/wallet_balance');
         const data = await res.json();
         const sol = data["sol"]
+        const goal = data["goalAmount"];
+
         setSolAmount(sol);
+        setGoalAmount(goal);
         console.log(data);
         console.log(sol);
       }
@@ -185,12 +189,12 @@ function App() {
               
               {/* progress bar: max = 10 */}
               <Line
-                percent={Math.min((solAmount / 10) * 100, 100)}
+                percent={Math.min((solAmount / goalAmount) * 100, 100)}
                 strokeWidth={4}
                 strokeColor="#d15400"
               />
               <p>
-                {solAmount} SOL / 10 SOL
+                {solAmount} SOL / {goalAmount} SOL
               </p>
               
             <Poll />
