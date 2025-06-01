@@ -1,21 +1,36 @@
 // components/Poll.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 
 function Poll() {
   const [pollData, setPollData] = useState({
-    question: 'What is your favorite programming language for web development?',
-    options: [
-      { id: 'js', text: 'JavaScript', votes: 15 },
-      { id: 'python', text: 'Python', votes: 10 },
-      { id: 'typescript', text: 'TypeScript', votes: 20 },
-      { id: 'go', text: 'Go', votes: 5 },
-    ],
+    question: 'Which organization should we support next?',
+    options: [],
   });
-
   const [selectedOption, setSelectedOption] = useState(null);
   const [hasVoted, setHasVoted] = useState(false);
-
   const totalVotes = pollData.options.reduce((sum, option) => sum + option.votes, 0);
+
+  useEffect(() => {
+    const fetchOrganizations = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/organizations');
+        const orgs = await res.json(); // now [{ id, name }, ...]
+        const options = orgs.map((org) => ({
+          id: org.id,
+          text: org.name,
+          votes: 0,
+        }));
+        setPollData({
+          question: 'Which organization should we support next?',
+          options
+        });
+      } catch (err) {
+        console.error('Failed to load organizations:', err);
+      }
+    };
+
+    fetchOrganizations();
+  }, []);
 
   const handleOptionChange = (e) => setSelectedOption(e.target.value);
 

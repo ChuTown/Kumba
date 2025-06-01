@@ -36,6 +36,11 @@ GOAL_AMOUNT = 1000
 
 EST_FEE = 0.01 #can check if sol balance < goal amount + fee later
 
+organizations = {"Native American Veterans Assistance": "id1", 
+                 "The Leukemia & Lymphoma Society": "id2", 
+                 "Save the Children®": "id3", 
+                 "St. Jude Children’s Research Hospital": "id4"} 
+
 db_config = {
     'host': os.getenv("DB_HOST"),
     'user': os.getenv("DB_USER"),
@@ -44,6 +49,7 @@ db_config = {
 }
 
 #below is helper methods
+#TODO
 def extract_tweet_ids_from_response_data(data):
     tweet_ids = []
     instructions = (
@@ -210,7 +216,7 @@ def latest_tweets_alt():
     return jsonify(tweets=tweet_ids), 200
 
 
-@app.route('/api/submit_vote', methods=['POST'])
+@app.route('/api/submit_vote', methods=['POST']) #double check code later for security risks
 def submit_vote():
     data = request.json
     option_id = data.get('option_id')
@@ -229,6 +235,14 @@ def submit_vote():
         return jsonify(success=True), 200
     except mysql.connector.Error as err:
         return jsonify(error=str(err)), 500
+
+@app.route('/api/organizations', methods=['GET'])
+def get_organizations():
+    return jsonify([
+        {"id": org_id, "name": name}
+        for name, org_id in organizations.items()
+    ]), 200
+
 
 if __name__ == '__main__':
     # Runs on http://localhost:5000
