@@ -7,6 +7,8 @@ import './App.css';
 import { Line } from 'rc-progress';
 import { Tweet } from 'react-tweet'
 import Poll from './components/Poll';
+import { Scrollama, Step } from 'react-scrollama';
+import swingingKumba from './assets/images/characters/kumba swing.png';
 
 
 function App() {
@@ -15,6 +17,7 @@ function App() {
   const [solAmount, setSolAmount] = useState(0);
   const [tweetIds, setTweetIds] = useState([]); //useState(["1927873790513442919", "1927426728588132647", "1927069267859509623", "1926056883246264542", "1925758056559792195"]);
   const [goalAmount, setGoalAmount] = useState(10);
+  const kumbaRef = useRef(null);
 
   // 1️⃣ Carousel ref + scroll helper
   const carouselRef = useRef(null);
@@ -24,7 +27,7 @@ function App() {
     const distance = clientWidth * 0.8 * (dir === 'left' ? -1 : 1);
     carouselRef.current.scrollBy({ left: distance, behavior: 'smooth' });
   };
-  
+
   // Will Uncomment later
   useEffect(() => {
     async function getTweets() {
@@ -91,9 +94,32 @@ function App() {
       }
     };
     retrieveSolAmount();
-  },[]);
+  }, []);
 
-  
+  // Parallax scroll effect for Kumba
+  useEffect(() => {
+    const handleParallaxScroll = () => {
+      if (!kumbaRef.current) return;
+
+      const value = window.scrollY;
+      const kumba = kumbaRef.current;
+
+      // Create a pendulum swing effect
+      // Using sine wave for smooth back-and-forth motion
+      const swingAngle = Math.sin(value * 0.005) * 30; // 30 degrees max swing
+      kumba.style.transform = `translateX(-50%) rotate(${swingAngle}deg)`;
+
+      // Hide Kumba when scrolled too far
+      if (value > 800) {
+        kumba.style.opacity = '0';
+      } else {
+        kumba.style.opacity = '1';
+      }
+    };
+
+    window.addEventListener('scroll', handleParallaxScroll);
+    return () => window.removeEventListener('scroll', handleParallaxScroll);
+  }, []);
 
   // Stats animation with Intersection Observer
   useEffect(() => {
@@ -156,12 +182,6 @@ function App() {
 
   return (
     <>
-      <div className="floating-dodos">
-        <div className="floating-dodo">🦤</div>
-        <div className="floating-dodo">🦤</div>
-        <div className="floating-dodo">🦤</div>
-      </div>
-
       <header style={{ background: isScrolled ? 'rgba(74, 74, 74, 0.95)' : 'rgba(74, 74, 74, 0.8)' }}>
         <nav className="container">
           <div className="logo">
@@ -178,15 +198,19 @@ function App() {
         </nav>
       </header>
 
+      <div className="swinging-image" ref={kumbaRef}>
+        <img src={swingingKumba} alt="Swinging Kumba" />
+      </div>
+
       <main>
         <section className="hero" id="home">
           <div className="container">
             <div className="hero-content">
               <h1>KUMBA Charity</h1>
               <p>Carving a better future in stone. Join the prehistoric revolution of giving.</p>
-              
+
               {backendMessage && <p className="backend-echo">{backendMessage}</p>}
-              
+
               {/* progress bar: max = 10 */}
               <Line
                 percent={Math.min((solAmount / goalAmount) * 100, 100)}
@@ -196,10 +220,10 @@ function App() {
               <p>
                 {solAmount} SOL / {goalAmount} SOL
               </p>
-              
-            <Poll />
 
-              
+              <Poll />
+
+
 
             </div>
           </div>
@@ -210,35 +234,35 @@ function App() {
 
             <h2 className="text-center mb-4">Latest from @KumbaOnsol</h2>
 
-          <div className="carousel-container">
-            <button
-              className="arrow-btn left"
-              onClick={() => scroll('left')}
-              aria-label="Scroll left"
-            >
-              &#9664;
-            </button>
+            <div className="carousel-container">
+              <button
+                className="arrow-btn left"
+                onClick={() => scroll('left')}
+                aria-label="Scroll left"
+              >
+                &#9664;
+              </button>
 
-            <div className="tweet-carousel" ref={carouselRef}>
-              <Row className="flex-nowrap g-3">
-                {tweetIds.map(id => (
-                  <Col key={id} xs="auto">
-                    <div className="tweet-wrapper">
-                      <Tweet id={id} options={{ width: 550 }} />
-                    </div>
-                  </Col>
-                ))}
-              </Row>
+              <div className="tweet-carousel" ref={carouselRef}>
+                <Row className="flex-nowrap g-3">
+                  {tweetIds.map(id => (
+                    <Col key={id} xs="auto">
+                      <div className="tweet-wrapper">
+                        <Tweet id={id} options={{ width: 550 }} />
+                      </div>
+                    </Col>
+                  ))}
+                </Row>
+              </div>
+
+              <button
+                className="arrow-btn right"
+                onClick={() => scroll('right')}
+                aria-label="Scroll right"
+              >
+                &#9654;
+              </button>
             </div>
-
-            <button
-              className="arrow-btn right"
-              onClick={() => scroll('right')}
-              aria-label="Scroll right"
-            >
-              &#9654;
-            </button>
-          </div>
 
           </Container>
         </section>
