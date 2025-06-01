@@ -19,7 +19,14 @@ function App() {
   const [goalAmount, setGoalAmount] = useState(10);
 
   const { scrollY } = useViewportScroll();
-  const x = useTransform(scrollY, [0, 500], ['-100%', '110%']); // animate left to right as you scroll down
+  const x = useTransform(scrollY, [0, 600], ['-100%', '1000%']);
+
+  const y = useTransform(
+    scrollY,
+    [0, 300, 900],  // more points for smoother curve
+    ['0px', '50px', '-200px']
+  );
+
 
   // 1️⃣ Carousel ref + scroll helper
   const carouselRef = useRef(null);
@@ -195,7 +202,8 @@ function App() {
             width: '150px',
             height: 'auto',
             zIndex: 10,
-            x
+            x,
+            y
           }}
         />
 
