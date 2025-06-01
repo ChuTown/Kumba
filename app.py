@@ -34,6 +34,8 @@ NEXT_ALLOWED  = 'next_allowed.txt'
 
 GOAL_AMOUNT = 1000
 
+EST_FEE = 0.01 #can check if sol balance < goal amount + fee later
+
 db_config = {
     'host': os.getenv("DB_HOST"),
     'user': os.getenv("DB_USER"),
