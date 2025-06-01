@@ -156,11 +156,6 @@ function App() {
 
   return (
     <>
-      <div className="floating-dodos">
-        <div className="floating-dodo">🦤</div>
-        <div className="floating-dodo">🦤</div>
-        <div className="floating-dodo">🦤</div>
-      </div>
 
       <header style={{ background: isScrolled ? 'rgba(74, 74, 74, 0.95)' : 'rgba(74, 74, 74, 0.8)' }}>
         <nav className="container">
