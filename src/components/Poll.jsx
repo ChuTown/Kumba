@@ -43,13 +43,20 @@ function Poll() {
           body: JSON.stringify({ option_id: selectedOption })
         });
         const data = await res.json();
+
         if (data.success) {
-          console.log('Vote successfully submitted');
+          const countRes = await fetch('http://localhost:5000/api/vote_counts');
+          const voteCounts = await countRes.json();
+
           setPollData((prev) => ({
             ...prev,
-            options: prev.options.map((option) =>
-              option.id === selectedOption ? { ...option, votes: option.votes + 1 } : option
-            ),
+            options: prev.options.map((option) => {
+              const match = voteCounts.find((vc) => vc.id === option.id);
+              return {
+                ...option,
+                votes: match ? match.votes : 0
+              };
+            }),
           }));
           setHasVoted(true);
         } else {

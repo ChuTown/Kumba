@@ -243,6 +243,21 @@ def get_organizations():
         for name, org_id in organizations.items()
     ]), 200
 
+@app.route('/api/vote_counts', methods=['GET'])
+def vote_counts():
+    try:
+        conn = mysql.connector.connect(**db_config)
+        cursor = conn.cursor()
+        cursor.execute("SELECT option_id, COUNT(*) FROM votes GROUP BY option_id")
+        results = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        vote_dicts = [{"id": row[0], "votes": row[1]} for row in results]
+        return jsonify(vote_dicts), 200
+
+    except mysql.connector.Error as err:
+        return jsonify(error=str(err)), 500
 
 if __name__ == '__main__':
     # Runs on http://localhost:5000
