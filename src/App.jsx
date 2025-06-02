@@ -15,6 +15,7 @@ function App() {
   const [solAmount, setSolAmount] = useState(0);
   const [tweetIds, setTweetIds] = useState([]); //useState(["1927873790513442919", "1927426728588132647", "1927069267859509623", "1926056883246264542", "1925758056559792195"]);
   const [goalAmount, setGoalAmount] = useState(10);
+  const [videoLoaded, setVideoLoaded] = useState(false);
 
   // 1️⃣ Carousel ref + scroll helper
   const carouselRef = useRef(null);
@@ -24,7 +25,7 @@ function App() {
     const distance = clientWidth * 0.8 * (dir === 'left' ? -1 : 1);
     carouselRef.current.scrollBy({ left: distance, behavior: 'smooth' });
   };
-  
+
   // Will Uncomment later
   useEffect(() => {
     async function getTweets() {
@@ -91,9 +92,9 @@ function App() {
       }
     };
     retrieveSolAmount();
-  },[]);
+  }, []);
 
-  
+
 
   // Stats animation with Intersection Observer
   useEffect(() => {
@@ -156,6 +157,17 @@ function App() {
 
   return (
     <>
+      <section className="top-video-section">
+        <video
+          className="kumba-video"
+          src="/videos/KumbaSwing.mp4"
+          muted
+          autoPlay
+          loop
+          playsInline
+          preload="auto"
+        />
+      </section>
 
       <header style={{ background: isScrolled ? 'rgba(74, 74, 74, 0.95)' : 'rgba(74, 74, 74, 0.8)' }}>
         <nav className="container">
@@ -179,9 +191,9 @@ function App() {
             <div className="hero-content">
               <h1>KUMBA Charity</h1>
               <p>Carving a better future in stone. Join the prehistoric revolution of giving.</p>
-              
+
               {backendMessage && <p className="backend-echo">{backendMessage}</p>}
-              
+
               {/* progress bar: max = 10 */}
               <Line
                 percent={Math.min((solAmount / goalAmount) * 100, 100)}
@@ -191,10 +203,10 @@ function App() {
               <p>
                 {solAmount} SOL / {goalAmount} SOL
               </p>
-              
-            <Poll />
 
-              
+              <Poll />
+
+
 
             </div>
           </div>
@@ -205,35 +217,35 @@ function App() {
 
             <h2 className="text-center mb-4">Latest from @KumbaOnsol</h2>
 
-          <div className="carousel-container">
-            <button
-              className="arrow-btn left"
-              onClick={() => scroll('left')}
-              aria-label="Scroll left"
-            >
-              &#9664;
-            </button>
+            <div className="carousel-container">
+              <button
+                className="arrow-btn left"
+                onClick={() => scroll('left')}
+                aria-label="Scroll left"
+              >
+                &#9664;
+              </button>
 
-            <div className="tweet-carousel" ref={carouselRef}>
-              <Row className="flex-nowrap g-3">
-                {tweetIds.map(id => (
-                  <Col key={id} xs="auto">
-                    <div className="tweet-wrapper">
-                      <Tweet id={id} options={{ width: 550 }} />
-                    </div>
-                  </Col>
-                ))}
-              </Row>
+              <div className="tweet-carousel" ref={carouselRef}>
+                <Row className="flex-nowrap g-3">
+                  {tweetIds.map(id => (
+                    <Col key={id} xs="auto">
+                      <div className="tweet-wrapper">
+                        <Tweet id={id} options={{ width: 550 }} />
+                      </div>
+                    </Col>
+                  ))}
+                </Row>
+              </div>
+
+              <button
+                className="arrow-btn right"
+                onClick={() => scroll('right')}
+                aria-label="Scroll right"
+              >
+                &#9654;
+              </button>
             </div>
-
-            <button
-              className="arrow-btn right"
-              onClick={() => scroll('right')}
-              aria-label="Scroll right"
-            >
-              &#9654;
-            </button>
-          </div>
 
           </Container>
         </section>

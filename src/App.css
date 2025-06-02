@@ -31,12 +31,12 @@ body {
 
 /* Header */
 header {
-    background: linear-gradient(to bottom, var(--stone-dark), var(--stone-gray));
-    border-bottom: 4px solid var(--accent-orange);
     position: fixed;
     width: 100%;
     top: 0;
     z-index: 1000;
+    background: linear-gradient(to bottom, var(--stone-dark), var(--stone-gray));
+    border-bottom: 4px solid var(--accent-orange);
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
@@ -433,99 +433,148 @@ footer {
 }
 
 .tweets-section {
-  transform: none !important;
-  padding: 4rem 0;
-  background: var(--stone-beige);
+    transform: none !important;
+    padding: 4rem 0;
+    background: var(--stone-beige);
 }
 
 .tweet-card {
-  transform: none !important;
-  border: 3px solid var(--accent-brown);
-  border-radius: 1rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  margin-bottom: 1.5rem;
+    transform: none !important;
+    border: 3px solid var(--accent-brown);
+    border-radius: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    margin-bottom: 1.5rem;
 }
 
 .tweet-wrapper {
-  width: 100%;
-  overflow: visible !important;
+    width: 100%;
+    overflow: visible !important;
 }
 
 .tweet-wrapper blockquote.twitter-tweet,
 .tweet-wrapper iframe {
-  width: 100% !important;
-  max-width: 100% !important;
-  height: auto   !important;
-  margin: 0 auto;
-  display: block;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 0 auto;
+    display: block;
 }
 
 .tweets-section .tweet-card {
-  height: auto !important;
+    height: auto !important;
 }
 
 
 /* make the carousel scrollable */
 .carousel-container {
-  position: relative;
-  display: flex;
-  justify-content: center;  /* ← center arrows + track */
-  align-items: center;
-  gap: 1rem;                /* optional spacing between arrows & track */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    /* ← center arrows + track */
+    align-items: center;
+    gap: 1rem;
+    /* optional spacing between arrows & track */
 }
 
 .tweet-carousel {
     overflow-x: auto;
     scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch; /* smooth touch on iOS */
-    scrollbar-width: none;             /* Firefox: hide scrollbar */
+    -webkit-overflow-scrolling: touch;
+    /* smooth touch on iOS */
+    scrollbar-width: none;
+    /* Firefox: hide scrollbar */
 }
 
 
 .tweet-carousel::-webkit-scrollbar {
-  display: none;                      /* Chrome/Safari: hide scrollbar */
+    display: none;
+    /* Chrome/Safari: hide scrollbar */
 }
 
 /* force the row to never wrap */
 .tweet-carousel .row {
-  display: flex;
-  flex-wrap: nowrap !important;
+    display: flex;
+    flex-wrap: nowrap !important;
 }
 
 /* each col only as wide as its contents */
 .tweet-carousel .col {
-  flex: 0 0 auto !important;
+    flex: 0 0 auto !important;
 }
 
 /* Some breathing room on the ends */
 .tweet-carousel {
-  padding-bottom: 1rem;
-  margin-left: -0.5rem;
-  margin-right: -0.5rem;
+    padding-bottom: 1rem;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
 }
+
 .tweet-carousel .col {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
 }
 
 /* arrows */
 .arrow-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  background: rgba(0,0,0,0.5);
-  border: none;
-  color: #fff;
-  font-size: 2rem;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-.arrow-btn.left  { left: 0.5rem; }
-.arrow-btn.right { right: 0.5rem; }
 
+.arrow-btn.left {
+    left: 0.5rem;
+}
+
+.arrow-btn.right {
+    right: 0.5rem;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
+    /* Prevents white flash */
+}
+
+.kumba-video {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+}
+
+/* Ensure content appears above video */
+main {
+    position: relative;
+    z-index: 1;
+    background: var(--stone-beige);
+}
+
+.top-video-section {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+    /* Prevents white flash */
+}
+
+.kumba-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
