@@ -1,5 +1,6 @@
 // components/Poll.jsx
 import React, { useState } from 'react';
+import { Turnstile } from '@marsidev/react-turnstile';
 
 function Poll() {
   const [pollData, setPollData] = useState({

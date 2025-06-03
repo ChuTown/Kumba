@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@marsidev/react-turnstile": "^1.1.0",
     "bootstrap": "^5.3.2",
     "prop-types": "^15.8.1",
     "rc-progress": "^3.5.1",

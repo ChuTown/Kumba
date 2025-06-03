@@ -225,6 +225,10 @@ def submit_vote():
     except mysql.connector.Error as err:
         return jsonify(error=str(err)), 500
 
+@app.route('/api/verify', methods=['POST'])
+def verify_captcha():
+    return jsonify(success=True, test=str("Heyllooo")), 200
+
 if __name__ == '__main__':
     # Runs on http://localhost:5000
     app.run(port=5000, debug=True)
