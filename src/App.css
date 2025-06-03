@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
+
 @font-face {
     font-family: 'Dodo';
     src: url('./assets/Dodo-Regular.otf') format('opentype');
@@ -539,4 +540,21 @@ footer {
 
 .arrow-btn.right {
     right: 0.5rem;
+}
+
+@keyframes gentle-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.logo img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    animation: gentle-spin 8s linear infinite;
 }
