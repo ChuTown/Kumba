@@ -1,14 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap');
-
-@font-face {
-    font-family: 'Dodo';
-    src: url('./assets/Dodo-Regular.otf') format('opentype');
-}
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Inter:ital,opsz@0,14..32;1,14..32&display=swap');
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Figtree', sans-serif;
 }
 
 :root {
@@ -21,7 +17,7 @@
 }
 
 body {
-    font-family: 'Caveat', cursive;
+    font-family: 'Figtree', sans-serif;
     background-color: var(--stone-beige);
     color: #fff;
     overflow-x: hidden;
@@ -63,6 +59,11 @@ nav {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+.logo span {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+}
+
 .dodo-icon {
     width: 50px;
     height: 50px;
@@ -80,6 +81,7 @@ nav {
 }
 
 .nav-links a {
+    font-family: 'Inter', sans-serif;
     color: #fff;
     text-decoration: none;
     transition: all 0.3s ease;
@@ -141,6 +143,7 @@ nav {
 }
 
 .hero h1 {
+    font-family: 'Inter', sans-serif;
     font-size: 5rem;
     margin-bottom: 1rem;
     color: var(--accent-orange);
@@ -219,6 +222,8 @@ nav {
 }
 
 .features h2 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
     text-align: center;
     font-size: 4rem;
     margin-bottom: 3rem;
@@ -278,6 +283,8 @@ nav {
 }
 
 .feature-card h3 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
     color: var(--accent-orange);
     margin-bottom: 1rem;
     font-size: 2rem;
@@ -301,6 +308,8 @@ nav {
 }
 
 .partners h2 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
     text-align: center;
     font-size: 4rem;
     margin-bottom: 3rem;
@@ -343,6 +352,8 @@ nav {
 }
 
 .partner-card h4 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
     color: var(--accent-orange);
     margin-bottom: 1rem;
     font-size: 1.8rem;
@@ -372,6 +383,8 @@ footer {
 }
 
 .footer-section h4 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
     color: var(--accent-orange);
     margin-bottom: 1rem;
     font-size: 2rem;
