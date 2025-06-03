@@ -15,6 +15,8 @@ function App() {
   const [backendMessage, setBackendMessage] = useState('');
   const [solAmount, setSolAmount] = useState(0);
   const [tweetIds, setTweetIds] = useState([]); //useState(["1927873790513442919", "1927426728588132647", "1927069267859509623", "1926056883246264542", "1925758056559792195"]);
+  const [goalAmount, setGoalAmount] = useState(10);
+  const [videoLoaded, setVideoLoaded] = useState(false);
 
   // 1️⃣ Carousel ref + scroll helper
   const carouselRef = useRef(null);
@@ -24,7 +26,7 @@ function App() {
     const distance = clientWidth * 0.8 * (dir === 'left' ? -1 : 1);
     carouselRef.current.scrollBy({ left: distance, behavior: 'smooth' });
   };
-  
+
   // Will Uncomment later
   useEffect(() => {
     async function getTweets() {
@@ -79,7 +81,10 @@ function App() {
         const res = await fetch('http://localhost:5000/api/wallet_balance');
         const data = await res.json();
         const sol = data["sol"]
+        const goal = data["goalAmount"];
+
         setSolAmount(sol);
+        setGoalAmount(goal);
         console.log(data);
         console.log(sol);
       }
@@ -88,9 +93,9 @@ function App() {
       }
     };
     retrieveSolAmount();
-  },[]);
+  }, []);
 
-  
+
 
   // Stats animation with Intersection Observer
   useEffect(() => {
@@ -153,16 +158,22 @@ function App() {
 
   return (
     <>
-      <div className="floating-dodos">
-        <div className="floating-dodo">🦤</div>
-        <div className="floating-dodo">🦤</div>
-        <div className="floating-dodo">🦤</div>
-      </div>
+      <section className="top-video-section">
+        <video
+          className="kumba-video"
+          src="/videos/kumbaSwinging.mp4"
+          muted
+          autoPlay
+          loop
+          playsInline
+          preload="auto"
+        />
+      </section>
 
       <header style={{ background: isScrolled ? 'rgba(74, 74, 74, 0.95)' : 'rgba(74, 74, 74, 0.8)' }}>
         <nav className="container">
           <div className="logo">
-            <div className="dodo-icon">🦕</div>
+            <img src="/images/characters/kumbaLogo.png" alt="Kumba Logo" className="dodo-icon" />
             <span>KUMBA</span>
           </div>
           <ul className="nav-links">
@@ -181,22 +192,29 @@ function App() {
             <div className="hero-content">
               <h1>KUMBA Charity</h1>
               <p>Carving a better future in stone. Join the prehistoric revolution of giving.</p>
-              
+
               {backendMessage && <p className="backend-echo">{backendMessage}</p>}
-              
+
               {/* progress bar: max = 10 */}
               <Line
-                percent={Math.min((solAmount / 10) * 100, 100)}
+                percent={Math.min((solAmount / goalAmount) * 100, 100)}
                 strokeWidth={4}
                 strokeColor="#d15400"
               />
               <p>
-                {solAmount} SOL / 10 SOL
+                {solAmount} SOL / {goalAmount} SOL
               </p>
+<<<<<<< HEAD
               
             <Poll />
 <Captcha />
               
+=======
+
+              <Poll />
+
+
+>>>>>>> a0e847cc314015fbfa70233b6272ca0a1deea8f1
 
             </div>
           </div>
@@ -207,35 +225,35 @@ function App() {
 
             <h2 className="text-center mb-4">Latest from @KumbaOnsol</h2>
 
-          <div className="carousel-container">
-            <button
-              className="arrow-btn left"
-              onClick={() => scroll('left')}
-              aria-label="Scroll left"
-            >
-              &#9664;
-            </button>
+            <div className="carousel-container">
+              <button
+                className="arrow-btn left"
+                onClick={() => scroll('left')}
+                aria-label="Scroll left"
+              >
+                &#9664;
+              </button>
 
-            <div className="tweet-carousel" ref={carouselRef}>
-              <Row className="flex-nowrap g-3">
-                {tweetIds.map(id => (
-                  <Col key={id} xs="auto">
-                    <div className="tweet-wrapper">
-                      <Tweet id={id} options={{ width: 550 }} />
-                    </div>
-                  </Col>
-                ))}
-              </Row>
+              <div className="tweet-carousel" ref={carouselRef}>
+                <Row className="flex-nowrap g-3">
+                  {tweetIds.map(id => (
+                    <Col key={id} xs="auto">
+                      <div className="tweet-wrapper">
+                        <Tweet id={id} options={{ width: 550 }} />
+                      </div>
+                    </Col>
+                  ))}
+                </Row>
+              </div>
+
+              <button
+                className="arrow-btn right"
+                onClick={() => scroll('right')}
+                aria-label="Scroll right"
+              >
+                &#9654;
+              </button>
             </div>
-
-            <button
-              className="arrow-btn right"
-              onClick={() => scroll('right')}
-              aria-label="Scroll right"
-            >
-              &#9654;
-            </button>
-          </div>
 
           </Container>
         </section>

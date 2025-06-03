@@ -1,22 +1,41 @@
 // components/Poll.jsx
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import { Turnstile } from '@marsidev/react-turnstile';
+=======
+import React, { useState, useEffect  } from 'react';
+>>>>>>> a0e847cc314015fbfa70233b6272ca0a1deea8f1
 
 function Poll() {
   const [pollData, setPollData] = useState({
-    question: 'What is your favorite programming language for web development?',
-    options: [
-      { id: 'js', text: 'JavaScript', votes: 15 },
-      { id: 'python', text: 'Python', votes: 10 },
-      { id: 'typescript', text: 'TypeScript', votes: 20 },
-      { id: 'go', text: 'Go', votes: 5 },
-    ],
+    question: 'Which organization should we support next?',
+    options: [],
   });
-
   const [selectedOption, setSelectedOption] = useState(null);
   const [hasVoted, setHasVoted] = useState(false);
-
   const totalVotes = pollData.options.reduce((sum, option) => sum + option.votes, 0);
+
+  useEffect(() => {
+    const fetchOrganizations = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/organizations');
+        const orgs = await res.json(); // now [{ id, name }, ...]
+        const options = orgs.map((org) => ({
+          id: org.id,
+          text: org.name,
+          votes: 0,
+        }));
+        setPollData({
+          question: 'Which organization should we support next?',
+          options
+        });
+      } catch (err) {
+        console.error('Failed to load organizations:', err);
+      }
+    };
+
+    fetchOrganizations();
+  }, []);
 
   const handleOptionChange = (e) => setSelectedOption(e.target.value);
 
@@ -29,13 +48,20 @@ function Poll() {
           body: JSON.stringify({ option_id: selectedOption })
         });
         const data = await res.json();
+
         if (data.success) {
-          console.log('Vote successfully submitted');
+          const countRes = await fetch('http://localhost:5000/api/vote_counts');
+          const voteCounts = await countRes.json();
+
           setPollData((prev) => ({
             ...prev,
-            options: prev.options.map((option) =>
-              option.id === selectedOption ? { ...option, votes: option.votes + 1 } : option
-            ),
+            options: prev.options.map((option) => {
+              const match = voteCounts.find((vc) => vc.id === option.id);
+              return {
+                ...option,
+                votes: match ? match.votes : 0
+              };
+            }),
           }));
           setHasVoted(true);
         } else {
