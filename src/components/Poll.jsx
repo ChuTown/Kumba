@@ -1,10 +1,6 @@
 // components/Poll.jsx
-<<<<<<< HEAD
-import React, { useState } from 'react';
 import { Turnstile } from '@marsidev/react-turnstile';
-=======
 import React, { useState, useEffect  } from 'react';
->>>>>>> a0e847cc314015fbfa70233b6272ca0a1deea8f1
 
 function Poll() {
   const [pollData, setPollData] = useState({

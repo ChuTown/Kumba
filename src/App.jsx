@@ -204,18 +204,10 @@ function App() {
               <p>
                 {solAmount} SOL / {goalAmount} SOL
               </p>
-<<<<<<< HEAD
               
             <Poll />
 <Captcha />
               
-=======
-
-              <Poll />
-
-
->>>>>>> a0e847cc314015fbfa70233b6272ca0a1deea8f1
-
             </div>
           </div>
         </section>

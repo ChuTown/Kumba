@@ -236,11 +236,10 @@ def submit_vote():
     except mysql.connector.Error as err:
         return jsonify(error=str(err)), 500
 
-<<<<<<< HEAD
 @app.route('/api/verify', methods=['POST'])
 def verify_captcha():
     return jsonify(success=True, test=str("Heyllooo")), 200
-=======
+
 @app.route('/api/organizations', methods=['GET'])
 def get_organizations():
     return jsonify([
@@ -263,7 +262,6 @@ def vote_counts():
 
     except mysql.connector.Error as err:
         return jsonify(error=str(err)), 500
->>>>>>> a0e847cc314015fbfa70233b6272ca0a1deea8f1
 
 if __name__ == '__main__':
     # Runs on http://localhost:5000
