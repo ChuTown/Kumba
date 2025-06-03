@@ -15,6 +15,7 @@ function App() {
   const [solAmount, setSolAmount] = useState(0);
   const [tweetIds, setTweetIds] = useState([]); //useState(["1927873790513442919", "1927426728588132647", "1927069267859509623", "1926056883246264542", "1925758056559792195"]);
   const [goalAmount, setGoalAmount] = useState(10);
+  const [videoLoaded, setVideoLoaded] = useState(false);
 
   // 1️⃣ Carousel ref + scroll helper
   const carouselRef = useRef(null);
@@ -156,6 +157,17 @@ function App() {
 
   return (
     <>
+      <section className="top-video-section">
+        <video
+          className="kumba-video"
+          src="/videos/kumbaSwinging.mp4"
+          muted
+          autoPlay
+          loop
+          playsInline
+          preload="auto"
+        />
+      </section>
 
       <header style={{ background: isScrolled ? 'rgba(74, 74, 74, 0.95)' : 'rgba(74, 74, 74, 0.8)' }}>
         <nav className="container">
