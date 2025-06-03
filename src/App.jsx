@@ -160,7 +160,7 @@ function App() {
       <section className="top-video-section">
         <video
           className="kumba-video"
-          src="/videos/KumbaSwing.mp4"
+          src="/videos/kumbaSwinging.mp4"
           muted
           autoPlay
           loop
