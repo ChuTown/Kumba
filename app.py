@@ -236,9 +236,26 @@ def submit_vote():
     except mysql.connector.Error as err:
         return jsonify(error=str(err)), 500
 
+verify_endpoint = 'https://challenges.cloudflare.com/turnstile/v0/siteverify'
+secret = '1x0000000000000000000000000000000AA' #TODO: Replace with real secret from .env
 @app.route('/api/verify', methods=['POST'])
 def verify_captcha():
-    return jsonify(success=True, test=str("Heyllooo")), 200
+    json_data = request.json
+    token_to_verify = json_data['token']
+    response = requests.post(
+        verify_endpoint, 
+        data = {
+            'secret': secret,
+            'response': token_to_verify
+        },
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    )
+
+    data = response.json()
+    status_code = 200 if data.get('success') else 400
+    return jsonify(success=data.get('success')), status_code
 
 @app.route('/api/organizations', methods=['GET'])
 def get_organizations():

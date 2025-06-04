@@ -35,7 +35,42 @@ function Poll() {
 
   const handleOptionChange = (e) => setSelectedOption(e.target.value);
 
-  const handleSubmitVote = async () => {
+  const formRef = React.useRef(null)
+
+  const handleSubmitVote = async (event) => {
+
+    event.preventDefault()
+    const formData = new FormData(formRef.current)
+    const token = formData.get('cf-turnstile-response')
+    console.log("Token from Captcha: " + token)
+
+    // Now we need to confirm the Captcha token is valid
+    try {
+
+      const res = await fetch('http://localhost:5000/api/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: token })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        console.log('TOKEN IS GOOOOOOOOD');
+      } else {
+        console.error('TOKEN IS BAAAAAD:', data.error);
+        return // RETURN IF BAD TOKEN -- DO NOT VOTE
+      }
+
+    } catch (err) {
+      console.error('Error verifying Turnstile Token:', err);
+      return // RETURN IF BAD TOKEN -- DO NOT VOTE
+    }
+
+    // DO NOT CONTINUE IF CAPTCHA KEY IS VALID
+    // DO NOT CONTINUE
+    // DO NOT CONTINUE
+
     if (selectedOption && !hasVoted) {
       try {
         const res = await fetch('http://localhost:5000/api/submit_vote', {
@@ -100,17 +135,20 @@ function Poll() {
               </label>
             ))}
           </div>
-          <button
-            onClick={handleSubmitVote}
-            disabled={!selectedOption}
-            className={`w-full py-3 px-4 rounded-md text-white font-semibold transition-all duration-300
+
+          <form ref={formRef} onSubmit={handleSubmitVote}>
+            <Turnstile siteKey='1x00000000000000000000AA' />
+            <button
+              type='submit'
+              disabled={!selectedOption}
+              className={`w-full py-3 px-4 rounded-md text-white font-semibold transition-all duration-300
               ${selectedOption
                 ? 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
                 : 'bg-gray-400 cursor-not-allowed'
               }`}
-          >
-            Vote
-          </button>
+            >Vote</button>
+          </form>
+
         </div>
       ) : (
         <div>

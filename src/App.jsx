@@ -7,7 +7,6 @@ import './App.css';
 import { Line } from 'rc-progress';
 import { Tweet } from 'react-tweet'
 import Poll from './components/Poll';
-import Captcha from './components/Captcha'
 
 
 function App() {
@@ -206,7 +205,6 @@ function App() {
               </p>
               
             <Poll />
-<Captcha />
               
             </div>
           </div>
