@@ -321,8 +321,7 @@ function App() {
             <div className="footer-section">
               <h4>Connect</h4>
               <div className="social-buttons">
-                <Button type="twitter" onClick={() => window.open('https://twitter.com')} />
-                <Button type="wallet" onClick={() => window.open('https://wallet.connect')} />
+                <Button type="twitter" onClick={() => window.open('https://x.com/KumbaOnsol')} />
               </div>
             </div>
           </div>
