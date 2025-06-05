@@ -36,3 +36,5 @@ venv/
 # Cache
 next_allowed.txt
 tweet_ids.txt
+
+*.sql

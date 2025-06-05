@@ -1,0 +1,36 @@
+# /Dockerfile.backend
+
+########################
+#  Stage 1: Install dependencies
+########################
+FROM python:3.13-alpine AS base
+
+# Install build tools and MariaDB/C connector headers (for mysqlclient, etc.)
+RUN apk add --no-cache \
+      build-base \
+      mariadb-connector-c-dev
+
+# Set working directory
+WORKDIR /app
+
+# Copy only requirements to leverage Docker layer caching
+COPY requirements.txt ./
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+########################
+#  Stage 2: Copy source and run
+########################
+FROM base AS runtime
+
+WORKDIR /app
+
+# Copy the rest of your application code
+COPY . .
+
+# Expose Flask’s default port
+EXPOSE 5000
+
+# Use gunicorn to serve the Flask app (assumes app.py defines "app")
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]

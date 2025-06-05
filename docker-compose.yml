@@ -1,0 +1,62 @@
+# /docker-compose.yml
+version: "3.8"
+
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      # All values come from .env (which must be git‐ignored)
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE:    ${DB_NAME}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    depends_on:
+      - db
+    environment:
+      # Force the backend to connect to the "db" service
+      - DB_HOST=db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+
+      # All other sensitive values pulled from .env
+      - QUICKNODE_ENDPOINT=${RPC_URL_DEV}
+      - RPC_URL_DEV=${RPC_URL_DEV}
+      - WALLET_ADDRESS=${WALLET_ADDRESS}
+      - TWITTER_BEARER_TOKEN=${TWITTER_BEARER_TOKEN}
+      - TWITTER_USERNAME=${TWITTER_USERNAME}
+      - KUMBA_X_RAW_URL=${KUMBA_X_RAW_URL}
+      - KUMBA_X_URL=${KUMBA_X_URL}
+      - KUMBA_X_METHOD=${KUMBA_X_METHOD}
+      - KUMBA_X_HEADERS=${KUMBA_X_HEADERS}
+      - KUMBA_X_COOKIES=${KUMBA_X_COOKIES}
+      - KUMBA_X_QUERIES=${KUMBA_X_QUERIES}
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./tweet_ids.txt:/app/tweet_ids.txt
+      - ./next_allowed.txt:/app/next_allowed.txt
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    depends_on:
+      - backend
+    environment:
+      # Vite will read this at build time (via .env), but we hardcode the internal URL here
+      - VITE_API_URL=http://backend:5000
+    ports:
+      - "3000:80"
+
+volumes:
+  db_data:

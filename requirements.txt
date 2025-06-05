@@ -4,3 +4,4 @@ requests
 dotenv
 solathon
 mysql-connector-python
+gunicorn>=20.0.4
