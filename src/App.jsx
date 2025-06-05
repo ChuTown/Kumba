@@ -203,9 +203,9 @@ function App() {
               <p>
                 {solAmount} SOL / {goalAmount} SOL
               </p>
-              
-            <Poll />
-              
+
+              <Poll />
+
             </div>
           </div>
         </section>
@@ -258,10 +258,6 @@ function App() {
               <div className="stat-card">
                 <div className="stat-number">15,847</div>
                 <div className="stat-label">Lives Changed</div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-number">250K+</div>
-                <div className="stat-label">Stone Age NFTs</div>
               </div>
               <div className="stat-card">
                 <div className="stat-number">50+</div>
