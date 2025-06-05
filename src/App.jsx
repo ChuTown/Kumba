@@ -8,6 +8,8 @@ import { Line } from 'rc-progress';
 import { Tweet } from 'react-tweet'
 import Poll from './components/Poll';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -30,7 +32,7 @@ function App() {
   useEffect(() => {
     async function getTweets() {
       try {
-        const res = await fetch('http://localhost:5000/api/latest_tweets_alt');
+        const res = await fetch(`${API_URL}/api/latest_tweets_alt`);
         const { tweets } = await res.json();
         setTweetIds(tweets);
       } catch (err) {
@@ -63,7 +65,7 @@ function App() {
   useEffect(() => {
     const pingBackend = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/hello');
+        const res = await fetch(`${API_URL}/api/hello`);
         const txt = await res.text();
         setBackendMessage(txt);
       } catch (err) {
@@ -77,7 +79,7 @@ function App() {
   useEffect(() => {
     const retrieveSolAmount = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/wallet_balance');
+        const res = await fetch(`${API_URL}/api/wallet_balance`);
         const data = await res.json();
         const sol = data["sol"]
         const goal = data["goalAmount"];

@@ -2,6 +2,8 @@
 import { Turnstile } from '@marsidev/react-turnstile';
 import React, { useState, useEffect  } from 'react';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 function Poll() {
   const [pollData, setPollData] = useState({
     question: 'Which organization should we support next?',
@@ -14,7 +16,7 @@ function Poll() {
   useEffect(() => {
     const fetchOrganizations = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/organizations');
+        const res = await fetch(`${API_URL}/api/organizations`);
         const orgs = await res.json(); // now [{ id, name }, ...]
         const options = orgs.map((org) => ({
           id: org.id,
@@ -47,7 +49,7 @@ function Poll() {
     // Now we need to confirm the Captcha token is valid
     try {
 
-      const res = await fetch('http://localhost:5000/api/verify', {
+      const res = await fetch(`${API_URL}/api/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: token })
@@ -73,7 +75,7 @@ function Poll() {
 
     if (selectedOption && !hasVoted) {
       try {
-        const res = await fetch('http://localhost:5000/api/submit_vote', {
+        const res = await fetch(`${API_URL}/api/submit_vote`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ option_id: selectedOption })
@@ -81,7 +83,7 @@ function Poll() {
         const data = await res.json();
 
         if (data.success) {
-          const countRes = await fetch('http://localhost:5000/api/vote_counts');
+          const countRes = await fetch(`${API_URL}/api/vote_counts`);
           const voteCounts = await countRes.json();
 
           setPollData((prev) => ({
