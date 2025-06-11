@@ -1,6 +1,6 @@
 // components/Poll.jsx
 import { Turnstile } from '@marsidev/react-turnstile';
-import React, { useState, useEffect  } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function Poll() {
   const [pollData, setPollData] = useState({
@@ -15,10 +15,11 @@ function Poll() {
     const fetchOrganizations = async () => {
       try {
         const res = await fetch('http://localhost:5000/api/organizations');
-        const orgs = await res.json(); // now [{ id, name }, ...]
+        const orgs = await res.json(); // now [{ id, name, url }, ...]
         const options = orgs.map((org) => ({
           id: org.id,
           text: org.name,
+          url: org.url,
           votes: 0,
         }));
         setPollData({
@@ -120,18 +121,29 @@ function Poll() {
               <label
                 key={option.id}
                 htmlFor={option.id}
-                className="flex items-center p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-between p-3 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
               >
-                <input
-                  type="radio"
-                  id={option.id}
-                  name="pollOption"
-                  value={option.id}
-                  checked={selectedOption === option.id}
-                  onChange={handleOptionChange}
-                  className="form-radio h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500 rounded-full"
-                />
-                <span className="ml-3 text-lg text-gray-700">{option.text}</span>
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id={option.id}
+                    name="pollOption"
+                    value={option.id}
+                    checked={selectedOption === option.id}
+                    onChange={handleOptionChange}
+                    className="form-radio h-5 w-5 text-blue-600 border-gray-300 focus:ring-blue-500 rounded-full"
+                  />
+                  <span className="ml-3 text-lg text-gray-700">{option.text}</span>
+                </div>
+                <a
+                  href={option.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 font-medium"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Visit
+                </a>
               </label>
             ))}
           </div>
@@ -143,9 +155,9 @@ function Poll() {
               disabled={!selectedOption}
               className={`w-full py-3 px-4 rounded-md text-white font-semibold transition-all duration-300
               ${selectedOption
-                ? 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
-                : 'bg-gray-400 cursor-not-allowed'
-              }`}
+                  ? 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+                  : 'bg-gray-400 cursor-not-allowed'
+                }`}
             >Vote</button>
           </form>
 
@@ -157,7 +169,17 @@ function Poll() {
             {pollData.options.map((option) => (
               <div key={option.id} className="flex flex-col">
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-lg font-medium text-gray-800">{option.text}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg font-medium text-gray-800">{option.text}</span>
+                    <a
+                      href={option.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                    >
+                      Visit
+                    </a>
+                  </div>
                   <span className="text-md font-bold text-blue-600">{calculatePercentage(option.votes)}</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-3">

@@ -36,10 +36,28 @@ GOAL_AMOUNT = 1000
 
 EST_FEE = 0.01 #can check if sol balance < goal amount + fee later
 
-organizations = {"Native American Veterans Assistance": "id1", 
-                 "The Leukemia & Lymphoma Society": "id2", 
-                 "Save the Children®": "id3", 
-                 "St. Jude Children’s Research Hospital": "id4"} 
+organizations = {
+    "Native American Veterans Assistance": {
+        "id": "id1",
+        "url": "https://www.navavets.org"
+    },
+    "The Leukemia & Lymphoma Society": {
+        "id": "id2",
+        "url": "https://www.lls.org"
+    },
+    "Save the Children®": {
+        "id": "id3",
+        "url": "https://www.savethechildren.org"
+    },
+    "St. Jude Children's Research Hospital": {
+        "id": "id4",
+        "url": "https://www.stjude.org"
+    },
+    "Hello": {
+        "id": "id5",
+        "url": "https://example.com"
+    }
+}
 
 db_config = {
     'host': os.getenv("DB_HOST"),
@@ -260,8 +278,8 @@ def verify_captcha():
 @app.route('/api/organizations', methods=['GET'])
 def get_organizations():
     return jsonify([
-        {"id": org_id, "name": name}
-        for name, org_id in organizations.items()
+        {"id": org_data["id"], "name": name, "url": org_data["url"]}
+        for name, org_data in organizations.items()
     ]), 200
 
 @app.route('/api/vote_counts', methods=['GET'])
